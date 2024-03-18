@@ -1,47 +1,44 @@
-#include <iostream>
-
-template<typename T>
+template <typename T>
 class UniquePtr {
-private:
+private: 
     T* mRawPtr;
 public: 
-    UniquePtr(T* ptr = nullptr) : mRawPtr(ptr) 
+    UniquePtr(T* ptr = nullptr) : mRawPtr(ptr)
     {
     }
 
-    // Copy constructor is deleted
-    UniquePtr(const UniquePtr<T>& unique) = delete;
-    UniquePtr<T> operator=(const UniquePtr<T>& unique) = delete;
+    UniquePtr(const UniquePtr<T>& other) = delete;
+    UniquePtr<T>& operator=(const UniquePtr<T>& other) = delete;
 
-    UniquePtr(UniquePtr<T>&& unique) noexcept
+    UniquePtr(UniquePtr<T>&& other)    
     {
-        mRawPtr = unique.mRawPtr;
-        unique.mRawPtr = nullptr;
+        mRawPtr = other.mRawPtr;
+        other.mRawPtr = nullptr;
     }
 
-    UniquePtr<T>& operator=(UniquePtr<T>&& unique) noexcept
+    UniquePtr<T>& operator=(UniquePtr<T>&& other)
     {
-        if (this != &unique)
+        if (this != &other)
         {
             delete mRawPtr;
-            mRawPtr = unique.mRawPtr;
-            unique.mRawPtr = nullptr;
+            mRawPtr = other.mRawPtr;
+            other.mRawPtr = nullptr;
         }
+
         return *this;
     }
 
-    ~UniquePtr()
+    T* operator->() const
     {
-        delete mRawPtr;
-        mRawPtr = nullptr;
+        return mRawPtr;
     }
 
-    T& operator*()
+    T& operator*() const
     {
         return *mRawPtr;
     }
 
-    T* operator->()
+    T* get() const
     {
         return mRawPtr;
     }

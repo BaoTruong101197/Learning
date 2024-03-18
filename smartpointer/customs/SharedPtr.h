@@ -2,68 +2,56 @@
 
 template <typename T>
 class SharedPtr {
-public:
-    // Default Constructor
+private: 
+    T* mRawPtr;
+    static int mRefCount;
+public: 
     SharedPtr(T* ptr = nullptr) : mRawPtr(ptr)
     {
     }
 
-    // Copy Constructor
-    SharedPtr(const SharedPtr<T>& other) 
+    SharedPtr(const SharedPtr<T>& other)
     {
         mRawPtr = other.mRawPtr;
-        mCount = other.mCount;
-        ++mCount;
+        ++mRefCount;
     }
 
-    // Move constructor
-    SharedPtr(SharedPtr<T>&& other) noexcept
+    SharedPtr<T>& operator=(const SharedPtr<T>& other)
     {
         mRawPtr = other.mRawPtr;
-        mCount = other.mCount;
+        ++mRefCount;
+        return *this;
+    }
+
+    SharedPtr(SharedPtr<T>&& other)
+    {
+        mRawPtr = other.mRawPtr;
         other.mRawPtr = nullptr;
     }
 
-    // Assign contructor
-    SharedPtr<T>& operator=(SharedPtr<T>&& other) noexcept
+    SharedPtr<T>& operator=(SharedPtr<T>&& other)
     {
         mRawPtr = other.mRawPtr;
-        mCount = other.mCount;
         other.mRawPtr = nullptr;
         return *this;
     }
 
     ~SharedPtr()
     {
-        --mCount;
-        if (mCount == 0)
+        if (--mRefCount == 0)
         {
             delete mRawPtr;
+            mRawPtr = nullptr;
         }
     }
 
-    int use_count() const
+    void reset()
     {
-        return mCount;
-    }
-
-    void reset() 
-    {
-        --mCount;
-        if (mCount == 0)
+        if (--mRefCount == 0)
         {
             delete mRawPtr;
+            mRawPtr = nullptr;
         }
-    }
-
-    T* get() const
-    {
-        return mRawPtr;
-    }
-
-    T* operator->() const
-    {
-        return mRawPtr;
     }
 
     T& operator*() const
@@ -71,10 +59,21 @@ public:
         return *mRawPtr;
     }
 
-private:
-    T* mRawPtr;
-    static int mCount;
+    T* operator->() const
+    {
+        return mRawPtr;
+    }
+
+    T* get() const
+    {
+        return mRawPtr;
+    }
+
+    int use_count() const
+    {
+        return mRefCount;
+    }
 };
 
-template <typename T>
-int SharedPtr<T>::mCount = 1;
+template<typename T>
+int SharedPtr<T>::mRefCount = 1;
