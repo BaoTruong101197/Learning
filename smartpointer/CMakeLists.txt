@@ -1,5 +1,5 @@
-project(shared_ptr)
+project(smart_ptr)
 
 set(CMAKE_CXX_STANDARD 11)
 
-add_executable(shared_ptr main.cpp)
+add_executable(smart_ptr main.cpp)
