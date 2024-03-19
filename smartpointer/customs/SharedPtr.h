@@ -1,11 +1,16 @@
 #include <iostream>
 
 template <typename T>
+class WeakPtr;
+
+template <typename T>
 class SharedPtr {
 private: 
     T* mRawPtr;
     int* mRefCount;
 public: 
+    friend class WeakPtr<T>;
+    
     SharedPtr(T* ptr = nullptr) : mRawPtr(ptr)
     {
         mRefCount = new int(1);
@@ -67,6 +72,11 @@ public:
     T* operator->() const
     {
         return mRawPtr;
+    }
+
+    bool operator==(std::nullptr_t) const
+    {
+        return this->mRawPtr == nullptr;
     }
 
     T* get() const
