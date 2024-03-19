@@ -1,4 +1,5 @@
 #include <iostream>
+#include <memory>
 #include "customs/SharedPtr.h"
 #include "customs/UniquePtr.h"
 
