@@ -1,33 +1,40 @@
 #include <iostream>
 
+struct RefCount {
+    bool weak_ref = false;
+    int* count;
+};
+
 template <typename T>
 class WeakPtr;
-
 template <typename T>
 class SharedPtr {
 private: 
     T* mRawPtr;
-    int* mRefCount;
+    RefCount* mRefCount;
 public: 
     friend class WeakPtr<T>;
     
     SharedPtr(T* ptr = nullptr) : mRawPtr(ptr)
     {
-        mRefCount = new int(1);
+        mRefCount = new RefCount();
+        mRefCount->count = new int(1);
+        std::cout << "create a new count with reference: " << mRefCount->count << std::endl;
+        mRefCount->weak_ref = false;
     }
 
     SharedPtr(const SharedPtr<T>& other)
     {
         mRawPtr = other.mRawPtr;
         mRefCount = other.mRefCount;
-        (*mRefCount)++;
+        (*mRefCount->count)++;
     }
 
     SharedPtr<T>& operator=(const SharedPtr<T>& other)
     {
         mRawPtr = other.mRawPtr;
         mRefCount = other.mRefCount;
-        (*mRefCount)++;
+        (*mRefCount->count)++;
         return *this;
     }
 
@@ -48,19 +55,21 @@ public:
 
     ~SharedPtr()
     {
-        if (--(*mRefCount) == 0)
+        std::cout << "Destructor SharedPtr weak_ref: " << mRefCount->weak_ref << std::endl;
+        std::cout << "Destructor SharedPtr count: " << *mRefCount->count << std::endl;
+        if (--(*mRefCount->count) == 0)
         {
             delete mRawPtr;
             mRawPtr = nullptr;
-        }
-    }
 
-    void reset()
-    {
-        if (--(*mRefCount) == 0)
-        {
-            delete mRawPtr;
-            mRawPtr = nullptr;
+            if (mRefCount->weak_ref == false)
+            {
+                std::cout << "Delete count in Shared_ptr " << mRefCount->count << std::endl;
+                delete mRefCount->count;
+                mRefCount->count = nullptr;
+                delete mRefCount;
+                mRefCount = nullptr;
+            }
         }
     }
 
@@ -86,6 +95,6 @@ public:
 
     int use_count() const
     {
-        return (*mRefCount);
+        return (*mRefCount->count);
     }
 };
