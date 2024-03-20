@@ -1,5 +1,5 @@
 #include <iostream>
-#include "customs/WeakPtr.h"
+#include "WeakPtr.h"
 #include <memory>
 
 int main()
