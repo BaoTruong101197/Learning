@@ -33,6 +33,9 @@ public:
             throw std::runtime_error("Fail to create thread");
     }
 
+    Thread(const Thread& other) = delete;
+    Thread& operator=(const Thread& other) = delete;
+
     ~Thread()
     {
         if (mIsJoinable)
