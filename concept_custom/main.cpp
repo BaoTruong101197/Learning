@@ -1,8 +1,5 @@
-#include <iostream>
-#include <memory>
+#include "thread/Thread.h"
 
-int main()
-{      
-
+int main() {
     return 0;
 }
