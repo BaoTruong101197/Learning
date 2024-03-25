@@ -32,6 +32,13 @@ public:
 
     SharedPtr<T>& operator=(const SharedPtr<T>& other)
     {
+        if (mRawPtr != nullptr)
+        {
+            std::cout << "delete raw pointer before: " << mRefCount->count << std::endl;
+            delete mRawPtr;
+            delete mRefCount->count;
+            delete mRefCount;
+        }
         mRawPtr = other.mRawPtr;
         mRefCount = other.mRefCount;
         (*mRefCount->count)++;
@@ -47,6 +54,13 @@ public:
 
     SharedPtr<T>& operator=(SharedPtr<T>&& other)
     {
+        if (mRawPtr != nullptr)
+        {
+            std::cout << "delete raw pointer before: " << mRefCount->count << std::endl;
+            delete mRawPtr;
+            delete mRefCount->count;
+            delete mRefCount;
+        }
         mRawPtr = other.mRawPtr;
         mRefCount = other.mRefCount;
         other.mRawPtr = nullptr;
