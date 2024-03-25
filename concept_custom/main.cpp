@@ -1,10 +1,6 @@
 #include "thread/Thread.h"
-#include <thread>
+#include "mutex/Mutex.h"
 
 int main() {
-    std::thread a([]() {
-        std::cout << "AAAA";
-    });
-
     return 0;
 }

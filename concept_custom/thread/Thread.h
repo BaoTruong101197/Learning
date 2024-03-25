@@ -1,6 +1,7 @@
 #include <iostream>
 #include <pthread.h>
 #include <functional>
+#include <thread>
 
 class Thread {
 private:
