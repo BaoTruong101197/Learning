@@ -1,4 +1,5 @@
 #include <iostream>
+#include <memory>
 
 struct RefCount {
     bool weak_ref = false;

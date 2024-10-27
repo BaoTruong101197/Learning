@@ -1,3 +1,5 @@
+#include <memory>
+
 template <typename T>
 class UniquePtr {
 private: 
